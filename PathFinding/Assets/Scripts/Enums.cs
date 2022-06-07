@@ -12,4 +12,12 @@ public class Enums
         Djik = 2,
         AStar = 3,
     }
+
+    public enum Tile
+    {
+        Start = 0,
+        End = 1,
+        Road = 2,
+        Wall = 3,
+    }
 }

@@ -29,5 +29,10 @@ public class GameManager : MonoBehaviour
         _algoButtons[buttonIndex].interactable = false;
     }
 
+    public void OnStartButtonPressed()
+    {
+
+    }
+
     #endregion
 }
