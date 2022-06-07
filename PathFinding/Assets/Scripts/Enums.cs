@@ -13,11 +13,11 @@ public class Enums
         AStar = 3,
     }
 
-    public enum Tile
+    public enum TileType
     {
         Start = 0,
         End = 1,
-        Road = 2,
-        Wall = 3,
+        Passable = 2,
+        Impassable = 3,
     }
 }

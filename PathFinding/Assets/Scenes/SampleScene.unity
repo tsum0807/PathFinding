@@ -232,9 +232,10 @@ MonoBehaviour:
   _tileMapSize: {x: 18, y: 12, z: 0}
   _startTile: {fileID: 11400000, guid: a3d51748a9d5ed84cb71767013e64bed, type: 2}
   _endTile: {fileID: 11400000, guid: 169a52ef14585c648a099ed2dec7c83f, type: 2}
+  _traversedTile: {fileID: 11400000, guid: 03aa8b4169a7b184f9bf5c51efdf47f9, type: 2}
   _passableTiles:
   - {fileID: 11400000, guid: 31e26ac2aaf11b44897f366f9d9082dd, type: 2}
-  - {fileID: 11400000, guid: 03aa8b4169a7b184f9bf5c51efdf47f9, type: 2}
+  - {fileID: 11400000, guid: 169a52ef14585c648a099ed2dec7c83f, type: 2}
   - {fileID: 11400000, guid: 3712cdbc2f0cab547a825f097d654690, type: 2}
   _impassableTiles:
   - {fileID: 11400000, guid: 208a6bcc423c7984b8e9fc1bc7213ed7, type: 2}
