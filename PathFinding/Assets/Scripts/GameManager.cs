@@ -5,13 +5,15 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager Instance { get; private set; }
 
-    private Enums.Algorithm _selectedAlgorithm;
+    private Enums.Algorithm _selectedAlgorithm = Enums.Algorithm.DFS;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
+            Destroy(this);
+        else
             Instance = this;
     }
 
@@ -31,7 +33,7 @@ public class GameManager : MonoBehaviour
 
     public void OnStartButtonPressed()
     {
-
+        PathFinder.Instance.StartPathFinding(_selectedAlgorithm);
     }
 
     #endregion

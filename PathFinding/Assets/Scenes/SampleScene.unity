@@ -231,6 +231,13 @@ MonoBehaviour:
   _tileMap: {fileID: 1595070533}
   _tileMapSize: {x: 18, y: 12, z: 0}
   _startTile: {fileID: 11400000, guid: a3d51748a9d5ed84cb71767013e64bed, type: 2}
+  _endTile: {fileID: 11400000, guid: 169a52ef14585c648a099ed2dec7c83f, type: 2}
+  _passableTiles:
+  - {fileID: 11400000, guid: 31e26ac2aaf11b44897f366f9d9082dd, type: 2}
+  - {fileID: 11400000, guid: 03aa8b4169a7b184f9bf5c51efdf47f9, type: 2}
+  - {fileID: 11400000, guid: 3712cdbc2f0cab547a825f097d654690, type: 2}
+  _impassableTiles:
+  - {fileID: 11400000, guid: 208a6bcc423c7984b8e9fc1bc7213ed7, type: 2}
 --- !u!4 &78069893
 Transform:
   m_ObjectHideFlags: 0
@@ -638,7 +645,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 627926491}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 960075780}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: OnStartButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &627926491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1079,7 +1098,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 867748604}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.64, y: -5.25, z: 0}
+  m_LocalPosition: {x: -6.66, y: -5.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3958,6 +3977,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4384547624419286814, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5537755533118798448, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
+      propertyPath: m_Interactable
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5537755533118798448, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
