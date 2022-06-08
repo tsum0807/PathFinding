@@ -49278,7 +49278,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_text
-      value: Depth First Search
+      value: Depth    First Search
       objectReference: {fileID: 0}
     - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_fontSize
