@@ -41,6 +41,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<Button> _algoButtons;
     [SerializeField] List<Button> _tileSelectionButtons;
     [SerializeField] List<Button> _speedButtons;
+    [SerializeField] Button _startButton;
+    [SerializeField] List<GameObject> _buttonBlockers;
 
     public void OnAlgorithmButtonPressed(int buttonIndex)
     {
@@ -102,6 +104,7 @@ public class GameManager : MonoBehaviour
         PathFinder.Instance.ClearAllData();
         PathFinder.Instance.StopPathFindingCoroutine();
         ConsoleController.Instance.ClearResults();
+        EnableButtonsWhilePathFinding(true);
     }
 
     public void OnSpeedOptionButtonPressed(int speed)
@@ -112,6 +115,14 @@ public class GameManager : MonoBehaviour
         }
         _speedButtons[speed].interactable = false;
         PathFinder.Instance.SetSearchSpeed((Enums.Speed)speed);
+    }
+
+    public void EnableButtonsWhilePathFinding(bool flag = true)
+    {
+        foreach (GameObject blocker in _buttonBlockers)
+        {
+            blocker.SetActive(!flag);
+        }
     }
 
     #endregion

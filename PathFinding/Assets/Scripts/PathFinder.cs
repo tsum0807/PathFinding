@@ -41,6 +41,7 @@ public class PathFinder : MonoBehaviour
 
     public void StartPathFinding(Enums.Algorithm algorithm)
     {
+        GameManager.Instance.EnableButtonsWhilePathFinding(false);
         ClearTileMap();
         ClearAllData();
         ConsoleController.Instance.ClearResults();
@@ -252,6 +253,7 @@ public class PathFinder : MonoBehaviour
             curTileData = curTileData.PreviousTile;
             yield return new WaitForSeconds(_searchSpeed);
         }
+        GameManager.Instance.EnableButtonsWhilePathFinding(true);
         yield return null;
     }
 
