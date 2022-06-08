@@ -23,6 +23,7 @@ public class PathFinder : MonoBehaviour
     private Coroutine _pathFindingCoroutine;
     private Tilemap _tileMap;
     private float _searchSpeed;// Time it takes to search a tile
+    private Vector3Int _endPos = Vector3Int.zero;
 
     public static PathFinder Instance { get; private set; }
 
@@ -50,94 +51,38 @@ public class PathFinder : MonoBehaviour
             case Enums.Algorithm.DFS:
                 _pathFindingCoroutine = StartCoroutine(DFS());
                 break;
-
             case Enums.Algorithm.BFS:
                 _pathFindingCoroutine = StartCoroutine(BFS());
+                break;
+            case Enums.Algorithm.AStar:
+                _pathFindingCoroutine = StartCoroutine(AStar());
                 break;
         }
     }
 
     #region algorithms
     private List<Vector3Int> _positionsOpened = new List<Vector3Int>();
-    private Queue<TileData> _tilesToSearchQueue = new Queue<TileData>();
-    private Stack<TileData> _tilesToSearchStack = new Stack<TileData>();
+    private Queue<TileData> _tilesToSearchQueue = new Queue<TileData>(); // BFS
+    private Stack<TileData> _tilesToSearchStack = new Stack<TileData>(); // DFS
+    private List<TileData> _tilesToSearchList = new List<TileData>(); // ASTAR
 
     IEnumerator DFS()
     {
-        float time = 0f;
-        TileData curTileData = new TileData(GetStartTilePos());
+        TileData curTileData = new TileData(GetStartTilePos(), null, Vector3Int.zero);
         // SEARCH
         while(_tileMap.GetTile(curTileData.Position) != _endTile)
         {
-            // ORDER: UP -> RIGHT -> DOWN -> LEFT
-            if (_tileMap.GetTile(curTileData.Up) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Up)) && 
-                !_positionsOpened.Contains(curTileData.Up))
-            {
-                if (_tileMap.GetTile(curTileData.Up) == _endTile)
-                {
-                    curTileData = new TileData(curTileData.Up, curTileData);
-                    break;
-                }
-                else
-                {
-                    _tilesToSearchStack.Push(new TileData(curTileData.Up, curTileData));
-                    SearchTile(curTileData.Up);
-                }
-            }
-            if (_tileMap.GetTile(curTileData.Right) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Right)) && 
-                !_positionsOpened.Contains(curTileData.Right))
-            {
-                if (_tileMap.GetTile(curTileData.Right) == _endTile)
-                {
-                    curTileData = new TileData(curTileData.Right, curTileData);
-                    break;
-                }
-                else
-                {
-                    _tilesToSearchStack.Push(new TileData(curTileData.Right, curTileData));
-                    SearchTile(curTileData.Right);
-                }
-            }
-            if (_tileMap.GetTile(curTileData.Down) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Down)) && 
-                !_positionsOpened.Contains(curTileData.Down))
-            {
-                if (_tileMap.GetTile(curTileData.Down) == _endTile)
-                {
-                    curTileData = new TileData(curTileData.Down, curTileData);
-                    break;
-                }
-                else
-                {
-                    _tilesToSearchStack.Push(new TileData(curTileData.Down, curTileData));
-                    SearchTile(curTileData.Down);
-                }
-            }
-            if (_tileMap.GetTile(curTileData.Left) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Left)) && 
-                !_positionsOpened.Contains(curTileData.Left))
-            {
-                if (_tileMap.GetTile(curTileData.Left) == _endTile)
-                {
-                    curTileData = new TileData(curTileData.Left, curTileData);
-                    break;
-                }
-                else
-                {
-                    _tilesToSearchStack.Push(new TileData(curTileData.Left, curTileData));
-                    SearchTile(curTileData.Left);
-                }
-            }
-
             if (_tilesToSearchStack.Count != 0)
             {
                 curTileData = _tilesToSearchStack.Pop();
                 TraverseTile(curTileData);
             }
 
-            time += _searchSpeed;
+            curTileData = SearchNeighbours(curTileData, null, _tilesToSearchStack);
+
             yield return new WaitForSeconds(_searchSpeed);
         }
 
-        // GET BEST PATH
         StartCoroutine(TracePath(curTileData));
 
         yield return null;
@@ -145,76 +90,46 @@ public class PathFinder : MonoBehaviour
 
     IEnumerator BFS()
     {
-        float time = 0f;
-        TileData curTileData = new TileData(GetStartTilePos());
+        TileData curTileData = new TileData(GetStartTilePos(), null, Vector3Int.zero);
         // SEARCH
         while (_tileMap.GetTile(curTileData.Position) != _endTile)
         {
-            // ORDER: UP -> RIGHT -> DOWN -> LEFT
-            if (_tileMap.GetTile(curTileData.Up) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Up)) &&
-                !_positionsOpened.Contains(curTileData.Up))
-            {
-                if (_tileMap.GetTile(curTileData.Up) == _endTile)
-                {
-                    curTileData = new TileData(curTileData.Up, curTileData);
-                    break;
-                }
-                else
-                {
-                    _tilesToSearchQueue.Enqueue(new TileData(curTileData.Up, curTileData));
-                    SearchTile(curTileData.Up);
-                }
-            }
-            if (_tileMap.GetTile(curTileData.Right) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Right)) &&
-                !_positionsOpened.Contains(curTileData.Right))
-            {
-                if (_tileMap.GetTile(curTileData.Right) == _endTile)
-                {
-                    curTileData = new TileData(curTileData.Right, curTileData);
-                    break;
-                }
-                else
-                {
-                    _tilesToSearchQueue.Enqueue(new TileData(curTileData.Right, curTileData));
-                    SearchTile(curTileData.Right);
-                }
-            }
-            if (_tileMap.GetTile(curTileData.Down) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Down)) &&
-                !_positionsOpened.Contains(curTileData.Down))
-            {
-                if (_tileMap.GetTile(curTileData.Down) == _endTile)
-                {
-                    curTileData = new TileData(curTileData.Down, curTileData);
-                    break;
-                }
-                else
-                {
-                    _tilesToSearchQueue.Enqueue(new TileData(curTileData.Down, curTileData));
-                    SearchTile(curTileData.Down);
-                }
-            }
-            if (_tileMap.GetTile(curTileData.Left) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Left)) &&
-                !_positionsOpened.Contains(curTileData.Left))
-            {
-                if (_tileMap.GetTile(curTileData.Left) == _endTile)
-                {
-                    curTileData = new TileData(curTileData.Left, curTileData);
-                    break;
-                }
-                else
-                {
-                    _tilesToSearchQueue.Enqueue(new TileData(curTileData.Left, curTileData));
-                    SearchTile(curTileData.Left);
-                }
-            }
-
             if (_tilesToSearchQueue.Count != 0)
             {
                 curTileData = _tilesToSearchQueue.Dequeue();
                 TraverseTile(curTileData);
             }
 
-            time += _searchSpeed;
+            curTileData = SearchNeighbours(curTileData, _tilesToSearchQueue, null);
+
+            yield return new WaitForSeconds(_searchSpeed);
+        }
+
+        StartCoroutine(TracePath(curTileData));
+
+        yield return null;
+    }
+
+    IEnumerator AStar()
+    {
+        FindEndPos();
+        TileData curTileData = new TileData(GetStartTilePos(), null, _endPos);
+        // SEARCH
+        while (_tileMap.GetTile(curTileData.Position) != _endTile)
+        {
+            if (_tilesToSearchList.Count != 0)
+                curTileData = _tilesToSearchList[0];
+            foreach (TileData tileData in _tilesToSearchList)
+            {
+                if (tileData.FCost < curTileData.FCost)
+                    curTileData = tileData;
+            }
+            TraverseTile(curTileData);
+            if (_tilesToSearchList.Contains(curTileData))
+                _tilesToSearchList.Remove(curTileData);
+
+            curTileData = SearchNeighbours(curTileData, null, null, _tilesToSearchList);
+
             yield return new WaitForSeconds(_searchSpeed);
         }
 
@@ -230,6 +145,8 @@ public class PathFinder : MonoBehaviour
 
     private void TraverseTile(TileData tileToTraverse)
     {
+        if (_tileMap.GetTile(tileToTraverse.Position) == _startTile)
+            return;
         _tileMap.SetTile(tileToTraverse.Position, _traversedTile);
         ConsoleController.Instance.IncrementResult(Enums.Stats.TilesTraversed);
     }
@@ -239,6 +156,106 @@ public class PathFinder : MonoBehaviour
         _tileMap.SetTile(tilePosToSearch, _toSearchTile);
         _positionsOpened.Add(tilePosToSearch);
         ConsoleController.Instance.IncrementResult(Enums.Stats.TilesSearched);
+    }
+
+    private TileData SearchNeighbours(TileData curTileData, Queue<TileData> queue = null, Stack<TileData> stack = null, List<TileData> list = null)
+    {
+        // ORDER: UP -> RIGHT -> DOWN -> LEFT
+        if (_tileMap.GetTile(curTileData.Up) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Up)) &&
+            !_positionsOpened.Contains(curTileData.Up))
+        {
+            if (_tileMap.GetTile(curTileData.Up) == _endTile)
+            {
+                return new TileData(curTileData.Up, curTileData, _endPos);
+            }
+            else
+            {
+                if (queue != null)
+                    queue.Enqueue(new TileData(curTileData.Up, curTileData, _endPos));
+                else if (stack != null)
+                    stack.Push(new TileData(curTileData.Up, curTileData, _endPos));
+                else if (list != null)
+                    list.Add(new TileData(curTileData.Up, curTileData, _endPos));
+                SearchTile(curTileData.Up);
+            }
+        }
+        if (_tileMap.GetTile(curTileData.Right) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Right)) &&
+            !_positionsOpened.Contains(curTileData.Right))
+        {
+            if (_tileMap.GetTile(curTileData.Right) == _endTile)
+            {
+                return new TileData(curTileData.Right, curTileData, _endPos);
+            }
+            else
+            {
+                if (queue != null)
+                    queue.Enqueue(new TileData(curTileData.Right, curTileData, _endPos));
+                else if (stack != null)
+                    stack.Push(new TileData(curTileData.Right, curTileData, _endPos));
+                else if (list != null)
+                    list.Add(new TileData(curTileData.Right, curTileData, _endPos));
+                SearchTile(curTileData.Right);
+            }
+        }
+        if (_tileMap.GetTile(curTileData.Down) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Down)) &&
+            !_positionsOpened.Contains(curTileData.Down))
+        {
+            if (_tileMap.GetTile(curTileData.Down) == _endTile)
+            {
+                return new TileData(curTileData.Down, curTileData, _endPos);
+            }
+            else
+            {
+                if (queue != null)
+                    queue.Enqueue(new TileData(curTileData.Down, curTileData, _endPos));
+                else if (stack != null)
+                    stack.Push(new TileData(curTileData.Down, curTileData, _endPos));
+                else if (list != null)
+                    list.Add(new TileData(curTileData.Down, curTileData, _endPos));
+                SearchTile(curTileData.Down);
+            }
+        }
+        if (_tileMap.GetTile(curTileData.Left) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Left)) &&
+            !_positionsOpened.Contains(curTileData.Left))
+        {
+            if (_tileMap.GetTile(curTileData.Left) == _endTile)
+            {
+                return new TileData(curTileData.Left, curTileData, _endPos);
+            }
+            else
+            {
+                if (queue != null)
+                    queue.Enqueue(new TileData(curTileData.Left, curTileData, _endPos));
+                else if (stack != null)
+                    stack.Push(new TileData(curTileData.Left, curTileData, _endPos));
+                else if (list != null)
+                    list.Add(new TileData(curTileData.Left, curTileData, _endPos));
+                SearchTile(curTileData.Left);
+            }
+        }
+        return curTileData;
+    }
+
+    private void FindEndPos()
+    {
+        Vector3Int curTile = new Vector3Int(0, 0, 0);
+        while (_tileMap.GetTile(curTile) != null)
+        {
+            if (_tileMap.GetTile(curTile) == _endTile)
+            {
+                _endPos = curTile;
+                return;
+            }
+            if (_tileMap.GetTile(curTile + new Vector3Int(1, 0, 0)) == null)
+            {
+                curTile.x = 0;
+                curTile.y++;
+            }
+            else
+            {
+                curTile.x++;
+            }
+        }
     }
 
     IEnumerator TracePath(TileData curTileData)
@@ -273,27 +290,6 @@ public class PathFinder : MonoBehaviour
             }
         }
         return curTile;
-    }
-
-    private class TileData
-    {
-        public Vector3Int Position;
-        public Enums.TileType TileType;
-        public Vector3Int Up;
-        public Vector3Int Right;
-        public Vector3Int Down;
-        public Vector3Int Left;
-        public TileData PreviousTile;
-
-        public TileData(Vector3Int pos, TileData prev = null)
-        {
-            Position = pos;
-            PreviousTile = prev;
-            Up = Position + new Vector3Int(0, 1, 0);
-            Right = Position + new Vector3Int(1, 0, 0);
-            Down = Position + new Vector3Int(0, -1, 0);
-            Left = Position + new Vector3Int(-1, 0, 0);
-        }
     }
 
     public void ClearTileMap()
@@ -346,4 +342,39 @@ public class PathFinder : MonoBehaviour
     }
 
     #endregion
+
+    private class TileData
+    {
+        public Vector3Int Position;
+        public Enums.TileType TileType;
+        public Vector3Int Up;
+        public Vector3Int Right;
+        public Vector3Int Down;
+        public Vector3Int Left;
+        public TileData PreviousTile;
+        // FOR A STAR
+        public int DistToStart;
+        public int DistToEnd;
+        public int FCost => DistToEnd + DistToStart;
+
+
+        public TileData(Vector3Int pos, TileData prev, Vector3Int endPos)
+        {
+            Position = pos;
+            PreviousTile = prev;
+
+            Up = Position + new Vector3Int(0, 1, 0);
+            Right = Position + new Vector3Int(1, 0, 0);
+            Down = Position + new Vector3Int(0, -1, 0);
+            Left = Position + new Vector3Int(-1, 0, 0);
+
+            if (prev == null)
+                DistToStart = 0;
+            else
+                DistToStart = PreviousTile.DistToStart + 1;
+
+            if (endPos != Vector3Int.zero)
+                DistToEnd = Mathf.Abs(endPos.x - Position.x) + Mathf.Abs(endPos.y - Position.y);
+        }
+    }
 }
