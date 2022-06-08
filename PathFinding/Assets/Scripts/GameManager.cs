@@ -22,8 +22,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        PathFinder.Instance.SetActiveTilemap(_tilemaps[0]);
-        SelectTilemap(0);
+        OnSpeedOptionButtonPressed(1);
+        OnTileMapButtonPressed(0);
+        OnAlgorithmButtonPressed(0);
     }
 
     private void SelectTilemap(int tilemapID)
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] List<Button> _algoButtons;
     [SerializeField] List<Button> _tileSelectionButtons;
+    [SerializeField] List<Button> _speedButtons;
 
     public void OnAlgorithmButtonPressed(int buttonIndex)
     {
@@ -100,6 +102,16 @@ public class GameManager : MonoBehaviour
         PathFinder.Instance.ClearAllData();
         PathFinder.Instance.StopPathFindingCoroutine();
         ConsoleController.Instance.ClearResults();
+    }
+
+    public void OnSpeedOptionButtonPressed(int speed)
+    {
+        foreach (Button button in _speedButtons)
+        {
+            button.interactable = true;
+        }
+        _speedButtons[speed].interactable = false;
+        PathFinder.Instance.SetSearchSpeed((Enums.Speed)speed);
     }
 
     #endregion

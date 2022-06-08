@@ -5,7 +5,9 @@ using UnityEngine.Tilemaps;
 
 public class PathFinder : MonoBehaviour
 {
-    private const float SEARCH_SPEED = 0.05f; // Time it takes to search a tile
+    private const float SEARCH_SPEED_SLOW = 0.1f;
+    private const float SEARCH_SPEED_NORMAL = 0.05f;
+    private const float SEARCH_SPEED_FAST = 0.02f;
 
     [SerializeField] private Vector3Int _tileMapSize;
     [SerializeField] private TileBase _startTile;
@@ -20,6 +22,7 @@ public class PathFinder : MonoBehaviour
 
     private Coroutine _pathFindingCoroutine;
     private Tilemap _tileMap;
+    private float _searchSpeed;// Time it takes to search a tile
 
     public static PathFinder Instance { get; private set; }
 
@@ -129,8 +132,8 @@ public class PathFinder : MonoBehaviour
                 TraverseTile(curTileData);
             }
 
-            time += SEARCH_SPEED;
-            yield return new WaitForSeconds(SEARCH_SPEED);
+            time += _searchSpeed;
+            yield return new WaitForSeconds(_searchSpeed);
         }
 
         // GET BEST PATH
@@ -210,8 +213,8 @@ public class PathFinder : MonoBehaviour
                 TraverseTile(curTileData);
             }
 
-            time += SEARCH_SPEED;
-            yield return new WaitForSeconds(SEARCH_SPEED);
+            time += _searchSpeed;
+            yield return new WaitForSeconds(_searchSpeed);
         }
 
         // GET BEST PATH
@@ -247,7 +250,7 @@ public class PathFinder : MonoBehaviour
             }
             ConsoleController.Instance.IncrementResult(Enums.Stats.TilesOnPathFound);
             curTileData = curTileData.PreviousTile;
-            yield return new WaitForSeconds(SEARCH_SPEED);
+            yield return new WaitForSeconds(_searchSpeed);
         }
         yield return null;
     }
@@ -322,6 +325,22 @@ public class PathFinder : MonoBehaviour
     public void StopPathFindingCoroutine()
     {
         StopCoroutine(_pathFindingCoroutine);
+    }
+
+    public void SetSearchSpeed(Enums.Speed speed)
+    {
+        switch(speed)
+        {
+            case Enums.Speed.Slow:
+                _searchSpeed = SEARCH_SPEED_SLOW;
+                break;
+            case Enums.Speed.Normal:
+                _searchSpeed = SEARCH_SPEED_NORMAL;
+                break;
+            case Enums.Speed.Fast:
+                _searchSpeed = SEARCH_SPEED_FAST;
+                break;
+        }
     }
 
     #endregion

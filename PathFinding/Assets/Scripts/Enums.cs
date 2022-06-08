@@ -28,4 +28,11 @@ public class Enums
         TilesOnPathFound = 2,
         BestPath = 3,
     }
+
+    public enum Speed
+    {
+        Slow = 0,
+        Normal = 1,
+        Fast = 2,
+    }
 }
