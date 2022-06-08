@@ -428,6 +428,10 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 16
       objectReference: {fileID: 0}
+    - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4384547624419286814, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -10256,7 +10260,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_text
-      value: Djik
+      value: Random
       objectReference: {fileID: 0}
     - target: {fileID: 4384547624419286814, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_Pivot.x
@@ -10610,7 +10614,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_text
-      value: BFS
+      value: Breadth First Search
       objectReference: {fileID: 0}
     - target: {fileID: 4384547624419286814, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_Pivot.x
@@ -10917,6 +10921,10 @@ PrefabInstance:
     - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_fontSizeBase
       value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4384547624419286814, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_Pivot.x
@@ -11752,6 +11760,10 @@ PrefabInstance:
     - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_fontSizeBase
       value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4384547624419286814, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_Pivot.x
@@ -49266,7 +49278,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_text
-      value: DFS
+      value: Depth First Search
+      objectReference: {fileID: 0}
+    - target: {fileID: 3238895429446274257, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
+      propertyPath: m_fontSize
+      value: 20.25
       objectReference: {fileID: 0}
     - target: {fileID: 4384547624419286814, guid: 70c28a624e57f89489d88e9a2b8c44dc, type: 3}
       propertyPath: m_Pivot.x
