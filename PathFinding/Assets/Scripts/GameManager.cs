@@ -72,6 +72,12 @@ public class GameManager : MonoBehaviour
             case 3:
                 ConsoleController.Instance.SetResult(Enums.Stats.BestPath, 40);
                 break;
+            case 4:
+                ConsoleController.Instance.SetResult(Enums.Stats.BestPath, 46);
+                break;
+            case 5:
+                ConsoleController.Instance.SetResult(Enums.Stats.BestPath, 3);
+                break;
         }
         PathFinder.Instance.SetActiveTilemap(_tilemaps[tilemapID]);
         SelectTilemap(tilemapID);

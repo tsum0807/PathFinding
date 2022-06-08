@@ -62,7 +62,6 @@ public class ConsoleController : MonoBehaviour
         _tilesSearchedText.text = "0";
         _tilesTraversedText.text = "0";
         _pathFoundDistanceText.text = "0";
-        _bestPathText.text = "0";
     }
 }
 
