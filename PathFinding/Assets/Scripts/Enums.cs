@@ -9,7 +9,7 @@ public class Enums
     {
         DFS = 0,
         BFS = 1,
-        Djik = 2,
+        Random = 2,
         AStar = 3,
     }
 

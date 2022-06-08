@@ -54,6 +54,9 @@ public class PathFinder : MonoBehaviour
             case Enums.Algorithm.BFS:
                 _pathFindingCoroutine = StartCoroutine(BFS());
                 break;
+            case Enums.Algorithm.Random:
+                _pathFindingCoroutine = StartCoroutine(RandomPath());
+                break;
             case Enums.Algorithm.AStar:
                 _pathFindingCoroutine = StartCoroutine(AStar());
                 break;
@@ -61,10 +64,10 @@ public class PathFinder : MonoBehaviour
     }
 
     #region algorithms
-    private List<Vector3Int> _positionsOpened = new List<Vector3Int>();
+    private List<Vector3Int> _positionsSearched = new List<Vector3Int>();
     private Queue<TileData> _tilesToSearchQueue = new Queue<TileData>(); // BFS
     private Stack<TileData> _tilesToSearchStack = new Stack<TileData>(); // DFS
-    private List<TileData> _tilesToSearchList = new List<TileData>(); // ASTAR
+    private List<TileData> _tilesToSearchList = new List<TileData>(); // ASTAR, Random
 
     IEnumerator DFS()
     {
@@ -101,6 +104,30 @@ public class PathFinder : MonoBehaviour
             }
 
             curTileData = SearchNeighbours(curTileData, _tilesToSearchQueue, null);
+
+            yield return new WaitForSeconds(_searchSpeed);
+        }
+
+        StartCoroutine(TracePath(curTileData));
+
+        yield return null;
+    }
+
+    IEnumerator RandomPath()
+    {
+        TileData curTileData = new TileData(GetStartTilePos(), null, Vector3Int.zero);
+        // SEARCH
+        while (_tileMap.GetTile(curTileData.Position) != _endTile)
+        {
+            if (_tilesToSearchList.Count != 0)
+            {
+                int rand = Random.Range(0, _tilesToSearchList.Count);
+                curTileData = _tilesToSearchList[rand];
+                TraverseTile(curTileData);
+                _tilesToSearchList.Remove(curTileData);
+            }
+
+            curTileData = SearchNeighbours(curTileData, null, null, _tilesToSearchList);
 
             yield return new WaitForSeconds(_searchSpeed);
         }
@@ -154,7 +181,7 @@ public class PathFinder : MonoBehaviour
     private void SearchTile(Vector3Int tilePosToSearch)
     {
         _tileMap.SetTile(tilePosToSearch, _toSearchTile);
-        _positionsOpened.Add(tilePosToSearch);
+        _positionsSearched.Add(tilePosToSearch);
         ConsoleController.Instance.IncrementResult(Enums.Stats.TilesSearched);
     }
 
@@ -162,7 +189,7 @@ public class PathFinder : MonoBehaviour
     {
         // ORDER: UP -> RIGHT -> DOWN -> LEFT
         if (_tileMap.GetTile(curTileData.Up) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Up)) &&
-            !_positionsOpened.Contains(curTileData.Up))
+            !_positionsSearched.Contains(curTileData.Up))
         {
             if (_tileMap.GetTile(curTileData.Up) == _endTile)
             {
@@ -180,7 +207,7 @@ public class PathFinder : MonoBehaviour
             }
         }
         if (_tileMap.GetTile(curTileData.Right) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Right)) &&
-            !_positionsOpened.Contains(curTileData.Right))
+            !_positionsSearched.Contains(curTileData.Right))
         {
             if (_tileMap.GetTile(curTileData.Right) == _endTile)
             {
@@ -198,7 +225,7 @@ public class PathFinder : MonoBehaviour
             }
         }
         if (_tileMap.GetTile(curTileData.Down) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Down)) &&
-            !_positionsOpened.Contains(curTileData.Down))
+            !_positionsSearched.Contains(curTileData.Down))
         {
             if (_tileMap.GetTile(curTileData.Down) == _endTile)
             {
@@ -216,7 +243,7 @@ public class PathFinder : MonoBehaviour
             }
         }
         if (_tileMap.GetTile(curTileData.Left) != null && _passableTiles.Contains(_tileMap.GetTile(curTileData.Left)) &&
-            !_positionsOpened.Contains(curTileData.Left))
+            !_positionsSearched.Contains(curTileData.Left))
         {
             if (_tileMap.GetTile(curTileData.Left) == _endTile)
             {
@@ -315,9 +342,10 @@ public class PathFinder : MonoBehaviour
 
     public void ClearAllData()
     {
-        _positionsOpened.Clear();
+        _positionsSearched.Clear();
         _tilesToSearchQueue.Clear();
         _tilesToSearchStack.Clear();
+        _tilesToSearchList.Clear();
     }
 
     public void StopPathFindingCoroutine()
