@@ -36,5 +36,11 @@ public class GameManager : MonoBehaviour
         PathFinder.Instance.StartPathFinding(_selectedAlgorithm);
     }
 
+    public void OnClearButtonPressed()
+    {
+        PathFinder.Instance.ClearTileMap();
+        PathFinder.Instance.ClearAllData();
+    }
+
     #endregion
 }

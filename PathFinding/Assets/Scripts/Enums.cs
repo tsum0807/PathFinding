@@ -20,4 +20,11 @@ public class Enums
         Passable = 2,
         Impassable = 3,
     }
+
+    public enum Stats
+    {
+        TilesSearched = 0,
+        TilesTraversed = 1,
+        TilesOnPathFound = 2
+    }
 }
