@@ -7,7 +7,6 @@ public class PathFinder : MonoBehaviour
 {
     private const float SEARCH_SPEED = 0.05f; // Time it takes to search a tile
 
-    [SerializeField] private Tilemap _tileMap;
     [SerializeField] private Vector3Int _tileMapSize;
     [SerializeField] private TileBase _startTile;
     [SerializeField] private TileBase _endTile;
@@ -20,6 +19,7 @@ public class PathFinder : MonoBehaviour
     [SerializeField] private List<TileBase> _temporaryTiles;
 
     private Coroutine _pathFindingCoroutine;
+    private Tilemap _tileMap;
 
     public static PathFinder Instance { get; private set; }
 
@@ -29,6 +29,11 @@ public class PathFinder : MonoBehaviour
             Destroy(this);
         else
             Instance = this;
+    }
+
+    public void SetActiveTilemap(Tilemap tilemap)
+    {
+        _tileMap = tilemap;
     }
 
     public void StartPathFinding(Enums.Algorithm algorithm)
