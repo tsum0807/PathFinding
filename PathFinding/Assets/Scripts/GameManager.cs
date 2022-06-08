@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     {
         PathFinder.Instance.ClearTileMap();
         PathFinder.Instance.ClearAllData();
+        PathFinder.Instance.StopPathFindingCoroutine();
     }
 
     #endregion

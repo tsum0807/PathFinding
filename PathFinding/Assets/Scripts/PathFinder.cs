@@ -19,6 +19,8 @@ public class PathFinder : MonoBehaviour
     [SerializeField] private List<TileBase> _impassableTiles;
     [SerializeField] private List<TileBase> _temporaryTiles;
 
+    private Coroutine _pathFindingCoroutine;
+
     public static PathFinder Instance { get; private set; }
 
     private void Awake()
@@ -36,11 +38,11 @@ public class PathFinder : MonoBehaviour
         switch(algorithm)
         {
             case Enums.Algorithm.DFS:
-                StartCoroutine(DFS());
+                _pathFindingCoroutine = StartCoroutine(DFS());
                 break;
 
             case Enums.Algorithm.BFS:
-                StartCoroutine(BFS());
+                _pathFindingCoroutine = StartCoroutine(BFS());
                 break;
         }
     }
@@ -303,6 +305,11 @@ public class PathFinder : MonoBehaviour
         _positionsOpened.Clear();
         _tilesToSearchQueue.Clear();
         _tilesToSearchStack.Clear();
+    }
+
+    public void StopPathFindingCoroutine()
+    {
+        StopCoroutine(_pathFindingCoroutine);
     }
 
     #endregion
