@@ -25,6 +25,7 @@ public class Enums
     {
         TilesSearched = 0,
         TilesTraversed = 1,
-        TilesOnPathFound = 2
+        TilesOnPathFound = 2,
+        BestPath = 3,
     }
 }

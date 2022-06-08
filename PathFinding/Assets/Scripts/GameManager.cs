@@ -31,6 +31,16 @@ public class GameManager : MonoBehaviour
         _algoButtons[buttonIndex].interactable = false;
     }
 
+    public void OnTileMapButtonPressed(int tileMapID)
+    {
+        switch(tileMapID)
+        {
+            case 1:
+                ConsoleController.Instance.SetResult(Enums.Stats.BestPath, 26);
+                break;
+        }
+    }
+
     public void OnStartButtonPressed()
     {
         PathFinder.Instance.StartPathFinding(_selectedAlgorithm);
@@ -41,6 +51,7 @@ public class GameManager : MonoBehaviour
         PathFinder.Instance.ClearTileMap();
         PathFinder.Instance.ClearAllData();
         PathFinder.Instance.StopPathFindingCoroutine();
+        ConsoleController.Instance.ClearResults();
     }
 
     #endregion
